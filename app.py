@@ -35,26 +35,30 @@ def get_vectorstore(text_chunks):
     return vectorstore
 
 def get_conversation_chain(vectorstore):
-    model_id = "google/flan-t5-large"
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
-    pipe = pipeline(
-        "text2text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        max_length=512,
-        temperature=0.5,
-        do_sample=True,
-        device=-1  # CPU; use 0 for GPU if available
-    )
-    llm = HuggingFacePipeline(pipeline=pipe)
-    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    conversation_chain = ConversationalRetrievalChain.from_llm(
-        llm=llm,
-        retriever=vectorstore.as_retriever(),
-        memory=memory
-    )
-    return conversation_chain
+    try:
+        model_id = "google/flan-t5-large"
+        tokenizer = AutoTokenizer.from_pretrained(model_id)
+        model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
+        pipe = pipeline(
+            "text2text-generation",
+            model=model,
+            tokenizer=tokenizer,
+            max_length=512,
+            temperature=0.5,
+            do_sample=True,
+            device=-1  # CPU
+        )
+        llm = HuggingFacePipeline(pipeline=pipe)
+        memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+        conversation_chain = ConversationalRetrievalChain.from_llm(
+            llm=llm,
+            retriever=vectorstore.as_retriever(),
+            memory=memory
+        )
+        return conversation_chain
+    except Exception as e:
+        st.error(f"Error initializing conversation chain: {str(e)}")
+        raise
 
 def handle_userinput(user_question):
     response = st.session_state.conversation({'question': user_question})

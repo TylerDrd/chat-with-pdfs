@@ -1,7 +1,11 @@
-langchain==0.3.23
-langchain_community==0.3.21
-langchain_huggingface==0.1.2
+streamlit==1.31.1
+python-dotenv==1.0.1
 PyPDF2==3.0.1
-python-dotenv==1.1.0
-streamlit==1.44.1
-transformers==4.51.3
+langchain==0.3.0
+langchain-community==0.3.0
+langchain-huggingface==0.1.0
+faiss-cpu==1.8.0
+transformers==4.45.1  # Update to latest stable version
+sentence-transformers==3.1.1
+torch==2.4.1
+huggingface_hub==0.25.1
